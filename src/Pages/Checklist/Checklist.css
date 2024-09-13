@@ -1,0 +1,42 @@
+ .tag{
+    text-align: center;
+    justify-content: center;
+    display: flex;
+     font-weight: bold;
+     background-color: black;
+     width: 6rem;
+     color: white;
+     margin-left: 44rem;
+     height: 1.8rem;
+     font-size: 1.2rem;
+     margin-top: 1rem;
+   
+}
+
+.awe, table{
+   margin-left: 2.3rem; 
+   position: relative;
+   margin-top: 1rem;
+   padding-top: 0.1rem;
+   
+    
+} 
+.sk{
+   background-color: #f9f9f9;          
+    border-radius: 10px;     
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    width: 60rem;
+    padding: 10px;
+    margin-left: 18rem;
+    height: 27rem;
+    padding-right: 4rem;
+    
+}
+
+.sea{
+   display: flex;
+   margin-left: 18rem;
+   margin-top: 2rem;
+   font-weight: bold;
+}
+

@@ -1,0 +1,72 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.name{
+   
+
+        background-color: #25274D;
+        height: 4rem;
+        width: 100%;
+        position: fixed;
+      
+    
+}
+  
+.img{
+    position: fixed;
+    height:50px;
+    margin-left: 4rem;
+    top: 0.5rem;
+   
+}
+
+.home{
+    position:fixed;
+    font-weight: bold;
+    top: 20px;
+    width: 10rem;
+    margin-left: 87rem;
+    color: white;
+}
+
+
+.log{
+    margin-top: 7rem;
+    display: flex;
+    justify-content: center;  
+     font-weight: bold;
+     background-color: black;
+     width: 5rem;
+     color: white;
+     margin-left: 45.5rem;
+     height: 1.5rem;
+     position: fixed;
+    
+}
+
+.sign{
+    margin-top: 10rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-radius:15rem ;
+    background-color: #ebebf3;;
+    height: 2rem;
+    width: 20rem;
+    text-align: center;
+    margin-left: 38rem;
+    padding-top: 0.5rem;
+    font-weight: bold;
+    color: rgb(1, 1, 1);
+    font-size: 1.2rem;
+    position: fixed;
+
+}
+.color{ 
+    
+    background-color: #AAABB8;
+    height: 100vh;
+    width: 100%;
+}
