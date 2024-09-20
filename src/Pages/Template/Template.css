@@ -83,7 +83,7 @@
  }
 
 .awesome button{
-    /* width: 6rem; */
+    
     width: 3rem;
     height: 2rem;
     border-radius: 4px;
@@ -121,11 +121,12 @@
     width: 70rem;
     padding: 30px;
     margin-left: 11rem;
-    height: 34rem;
+    height: 35rem;
     padding-right: 4rem;
 }
 
 .ad{
+    margin-top: 4rem;
     display: flex;
     gap: 2rem;
     text-align: center;
@@ -153,6 +154,7 @@
   .ad p:hover {
     background-color: #25274D;
     border-color: #004080; 
+    cursor: pointer;
   }
   
 .jk{
@@ -163,7 +165,7 @@
 }
 
 .dd{
-    margin-left: 59rem;
+    margin-left: 2rem;
     width: 5rem;
     height: 2.3rem;
     border-radius: 5px;
@@ -171,7 +173,33 @@
     background-color: #585b95;
     color: white;
     position: absolute;
-    font-size: 1rem;
-    
-    
+    font-size: 1rem;     
 }
+
+.dd:hover{
+    background-color: #25274D;
+    border-color: #004080; 
+    cursor: pointer;
+
+}
+
+
+.alert-message-position {
+    background-color: #24254d;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: relative; 
+    top: 15;
+    z-index: 1000; 
+    width: 15rem;
+    justify-content: center;
+    margin-left: 40rem;
+  }
+
+ 
+
+
+
+
+ 

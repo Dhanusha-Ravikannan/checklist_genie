@@ -19,13 +19,8 @@
   top: 0.5rem;
 } */
 
-.hii{
-  height: 50px;
-  margin-top: 0.5rem;
-  
-}
 
-.ir{
+/* .ir{
   margin-left: 82rem;
   font-size: 40px;
   color: white;
@@ -33,5 +28,10 @@
   
   
 
-}
+} */
 
+.hii{
+  height: 50px;
+  margin-top: 0.5rem;
+  
+}

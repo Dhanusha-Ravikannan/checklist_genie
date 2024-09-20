@@ -2,14 +2,14 @@ import React from 'react'
 import Navbar from '../../Components/Navbar';
 
 
-const Report = () => {
+const Shared = () => {
   return (
-    <> 
+    <>
     <Navbar/>
-    <div>Report</div>
-
+   
+    <div>Shared</div>
     </>
   )
 }
 
-export default Report
+export default Shared

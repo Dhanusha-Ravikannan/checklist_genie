@@ -1,96 +1,105 @@
-import React from 'react'
+
+import React, { useState } from 'react';
 import '../../Pages/Template/Template.css';
 import Navbar from '../../Components/Navbar';
 import Checkbox from '@mui/material/Checkbox';
-import { faPen, faTrash} from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 const Template = () => {
+  const [activeCheckbox, setActiveCheckbox] = useState(null);
+
+ const handleCheckboxChange = (index) => {
+    setActiveCheckbox(index);
+  };
+
+
+  const [update, setUpdated] = useState(false);
+  const [shared, setShared] = useState(false);
+
+
+  const handleUpdate = () => {
+    setUpdated(true);
+    setTimeout(() => setUpdated(false), 3000);
+  };
+
+  const handleShared = () => {
+    setShared(true);
+    setTimeout(() => setShared(false), 3000);
+  };
+
+
+
   return (
     <> 
       <div className='dashboard-container'> 
-    <Navbar/>
-    <div className='content'> 
-
-        <div className='sky'> 
-    <div className='ready' > PROJECT TITLE  <button className='dd'> Add+ </button> </div>
-    
-    
-    <div className='awesome'>
-    <table >
-        <tr > 
-            <th > S.No </th>
-            <th > Template Name </th>
-            <th > Yes </th>
-            <th > No  </th>
-            <th > Action  </th>
-        </tr>
-        <tr > 
-            <td > 1.  </td>
-            <td > Daily Clock In   </td>
-            <td > <Checkbox {...label} />  </td>
-            <td > <Checkbox {...label} />  </td>
-            <td > <button > <FontAwesomeIcon icon={faPen}/> </button> <span> </span> <button > <FontAwesomeIcon icon={faTrash}  />   </button> </td>
-            
-        </tr>
-        <tr > 
-            <td > 2.  </td>
-            <td > Monday Meeting  </td>
-            <td > <Checkbox {...label} />  </td>
-            <td > <Checkbox {...label} />  </td>
-            {/* <td ><button className='shade'> Edit </button>  <button className='paint'> Delete  </button> </td> */}
-            <td > <button > <FontAwesomeIcon icon={faPen}/> </button> <span> </span> <button > <FontAwesomeIcon icon={faTrash}  />   </button> </td>
-
-        </tr>
-        <tr > 
-            <td > 3.  </td>
-            <td > Testing </td>
-            <td > <Checkbox {...label} /> </td>
-            <td > <Checkbox {...label} />  </td>
-            {/* <td > <button className='shade'> Edit </button>   <button className='paint'> Delete  </button>  </td> */}
-            <td > <button > <FontAwesomeIcon icon={faPen}/> </button> <span> </span> <button > <FontAwesomeIcon icon={faTrash}  />   </button> </td>
-
-        </tr>
-        <tr > 
-            <td > 4.  </td>
-            <td > Workdone email </td>
-            <td > <Checkbox {...label} /> </td>
-            <td > <Checkbox {...label} />  </td>
-            {/* <td > <button className='shade'> Edit </button>  <button className='paint'> Delete  </button>  </td> */}
-            <td > <button > <FontAwesomeIcon icon={faPen}/> </button> <span> </span> <button > <FontAwesomeIcon icon={faTrash}  />   </button> </td>
-
-        </tr>
-        <tr > 
-            <td > 5.  </td>
-            <td > Daily Clock out </td>
-            <td > <Checkbox {...label} /> </td>
-            <td > <Checkbox {...label} />  </td>
-            {/* <td > <button className='shade'> Edit </button>  <button className='paint'> Delete  </button>  </td> */}
-            <td > <button > <FontAwesomeIcon icon={faPen}/> </button> <span> </span> <button > <FontAwesomeIcon icon={faTrash}  />   </button> </td>
-
-        </tr>
-       
-          
-       
-    </table>
-    </div>
-    <br/><div className='ad'> 
-    <p> Update </p> <p>  Share  </p> </div></div>
-    {/* <button className='cork'> Add </button><button className='corkk'> Update </button><button className='corkkk'> Share </button> */}
-   
-    </div>
-
-
-
-
-    
-    </div>
-  
+        <Navbar/>
+        {update && <div className="alert-message-position">Updated Successfully!</div>}
+        {shared && <div className="alert-message-position">Shared Successfully!</div>}
+        <div className='content'> 
+          <div className='sky'> 
+            <div className='ready'> PROJECT TITLE </div>
+            <div className='awesome'>
+              <table>
+                <thead>
+                  <tr> 
+                    <th>S.No</th>
+                    <th>Template Name</th>
+                    <th>Yes</th>
+                    <th>No</th>
+                    <th>Comments</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {['Daily Clock In', 'Monday Meeting', 'Workdone email', 'Daily Clock out'].map((template, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}.</td>
+                      <td>{template}</td>
+                      <td>
+                        <Checkbox 
+                          {...label} 
+                          checked={activeCheckbox === index} 
+                          onChange={() => handleCheckboxChange(index)} 
+                        />
+                      </td>
+                      <td>
+                        <Checkbox 
+                          {...label} 
+                          checked={activeCheckbox === index + 5} 
+                          onChange={() => handleCheckboxChange(index + 5)} 
+                        />
+                      </td>
+                      <td>
+                        <textarea></textarea>
+                      </td>
+                      <td>
+                        <button><FontAwesomeIcon icon={faPen}/></button>
+                        <span></span>
+                        <button><FontAwesomeIcon icon={faTrash}/></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <br />
+            <button className='dd'>Add +</button>
+            <div className='ad'> 
+              <p onClick={handleUpdate}>Update</p> 
+              <p onClick={handleShared}>Share</p> 
+            </div>
+          </div>
+        </div>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Template
+export default Template;
+
+
+
+

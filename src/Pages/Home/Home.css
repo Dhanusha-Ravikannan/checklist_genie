@@ -3,70 +3,84 @@
     padding: 0;
 }
 
-.name{
-   
 
+.name{
         background-color: #25274D;
         height: 4rem;
         width: 100%;
         position: fixed;
-      
-    
 }
+
   
 .img{
     position: fixed;
     height:50px;
     margin-left: 4rem;
     top: 0.5rem;
-   
 }
 
-.home{
-    position:fixed;
+
+.hom{
+    margin-top: 20px;
+    text-align: right;
+    padding-right: 4rem;
     font-weight: bold;
-    top: 20px;
-    width: 10rem;
-    margin-left: 87rem;
     color: white;
 }
 
-
-.log{
-    margin-top: 7rem;
-    display: flex;
-    justify-content: center;  
-     font-weight: bold;
-     background-color: black;
-     width: 5rem;
-     color: white;
-     margin-left: 45.5rem;
-     height: 1.5rem;
-     position: fixed;
-    
-}
-
-.sign{
-    margin-top: 10rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    border-radius:15rem ;
-    background-color: #ebebf3;;
-    height: 2rem;
-    width: 20rem;
+.sty{
+    background-color: #f9f9f9;          
+    border-radius: 10px;     
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    width: 25rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    padding-bottom: 1rem;
+    margin-top: 5rem;
+    margin-left: 35rem;
+    height: 10rem;
+    padding-top: 2rem;
+    display: grid;
     text-align: center;
-    margin-left: 38rem;
-    padding-top: 0.5rem;
-    font-weight: bold;
-    color: rgb(1, 1, 1);
-    font-size: 1.2rem;
-    position: fixed;
 
 }
-.color{ 
+  
+.ggg{
     
-    background-color: #AAABB8;
     height: 100vh;
-    width: 100%;
+    width: 96rem;
+    background-color: #AAABB8;
+}
+
+.signing{
+    background-color: #ffffff;
+    border-radius: 5rem;
+    width: 20rem;
+    height: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    justify-items: center;
+    text-align: center;
+    justify-content: center;
+    padding-top: 1rem;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.1rem;
+    font-weight:bolder;
+    color: #25274D;
+    margin-left: 2.1rem;
+    cursor: pointer;
+}
+
+.signing:hover{
+    background-color:#AAABB8 ;
+    
+}
+
+.use{
+    color: rgb(87, 83, 83);
+}
+
+.genie{
+    font-weight: bold;
+    font-size: 1.5rem;
 }
