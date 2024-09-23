@@ -1,6 +1,6 @@
 import React from 'react'
-import '../Home/Home.css'
-import imagess from '../../Assets/logo.jpg'
+import '../../admin/Home/Home.css'
+import imagess from '../../../Assets/logo.jpg'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faHouse} from '@fortawesome/free-solid-svg-icons';
 import { FcGoogle } from "react-icons/fc";
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const Home = () => {
   const navigate = useNavigate();
   const handleGoogleSignIn=()=>{
-    navigate('/dashboard');
+    navigate('/admin/dashboard');
   }
  
   return (

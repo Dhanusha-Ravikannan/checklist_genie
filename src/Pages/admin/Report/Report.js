@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import Navbar from '../../Components/Navbar';
+import Navbar from '../../../Components/Navbar';
 import { PieChart } from '@mui/x-charts/PieChart';
 import '../Report/Report.css';
 

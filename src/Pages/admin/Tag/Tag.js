@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import Navbar from '../../Components/Navbar';
-// import '../../Pages/Checklist/Checklist.css';
-import '../../Pages/Tag/Tag.css';
+import Navbar from '../../../Components/Navbar';
+import '../../admin/Tag/Tag.css';
 
 const Tag = () => {
   const [saved, setSaved] = useState(false);

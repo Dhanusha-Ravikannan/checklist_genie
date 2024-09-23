@@ -1,10 +1,11 @@
 import * as React from 'react';
 import '../Dashboard/Dashboard.css';
-import '../../Components/Navbar/Navbar.css'
-import ash from '../../Assets/ashvin.png'
-import amal from '../../Assets/ashvin.png'
-import swetha from '../../Assets/swetha.png'
-import Navbar from '../../Components/Navbar';
+import '../../../Components/Navbar/Navbar.css';
+import ash from '../../../Assets/ashvin.png';
+import amal from '../../../Assets/ashvin.png';
+import swetha from '../../../Assets/swetha.png';
+import Navbar from '../../../Components/Navbar';
+
 
 
 

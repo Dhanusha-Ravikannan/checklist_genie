@@ -1,6 +1,6 @@
 import React from 'react'
-import Navbar from '../../Components/Navbar';
-import '../../Pages/Notification/Notification.css'
+import '../../admin/Notification/Notification.css';
+import Navbar from '../../../Components/Navbar';
 
 
 const Notification = () => {
@@ -8,15 +8,11 @@ const Notification = () => {
     <>
      <div className='dashboard-container'> 
     <Navbar/>
-    
-    
+  
     <h2 className='notify'> Notification</h2>
     
-    <div className='okay'> 
+    <div className='okay'>  
     <h3 className='data'> From: <input placeholder='User Name'/> </h3>
-      {/* <label> Enter the Message you want to send: <input/></label>
-     
-      <label> Choose the member you want to send: <input/></label> */}
       </div>
     </div>
    

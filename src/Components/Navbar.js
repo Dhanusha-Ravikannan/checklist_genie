@@ -20,7 +20,7 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import TemplateIcon from '@mui/icons-material/Description';
-// import ShareIcon from '@mui/icons-material/Share';
+import ShareIcon from '@mui/icons-material/Share';
 import imagelogo from '../Assets/logo.jpg';
 import { IoPersonCircleSharp } from "react-icons/io5";
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -139,6 +139,8 @@ export default function MiniDrawer() {
     handleMenuClose();
   };
 
+
+
   return (
     <> 
     <Box sx={{ display: 'flex' }}>
@@ -202,8 +204,9 @@ export default function MiniDrawer() {
         <Divider />
         <List>
           {[{
-            text: 'Dashboard',
-            icon: <DashboardIcon />
+            text : 'Dashboard' ,
+            icon: <DashboardIcon  />
+            
           },
           {
             text: 'Template',
@@ -219,7 +222,7 @@ export default function MiniDrawer() {
           }
           ].map(({ text, icon }) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <Link to={`/${text.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+              <Link to={`/admin/${text.toLowerCase()}`} style={{ textDecoration: 'none' }}>
                 <ListItemButton
                   sx={[
                     {
@@ -273,18 +276,18 @@ export default function MiniDrawer() {
         <List>
           {[
 
-          //   {
-          //   text: 'Shared Task',
-          //   icon: <ShareIcon />,
-          //   path: '/shared-task'
-          // },
+            {
+            text: 'Shared Task',
+            icon: <ShareIcon />
+            
+          },
           {
             text: 'Notification',
             icon: <NotificationsIcon />
           },
           ].map(({ text, icon }) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <Link to={`/${text.toLowerCase().replace(' ', '-')}`} style={{ textDecoration: 'none' }}>
+              <Link to={`/admin/${text.toLowerCase().replace(' ', '-')}`} style={{ textDecoration: 'none' }}>
                 <ListItemButton
                   sx={[
                     {
