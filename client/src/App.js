@@ -2,7 +2,7 @@ import React from "react";
 import {BrowserRouter,Routes,Route,Outlet } from "react-router-dom";
 
 
-import './App.css';
+
 import AdminHome from './Pages/admin/Home/Home';
 import AdminDashboard from './Pages/admin/Dashboard/Dashboard';
 import AdminNavbar from './Pages/admin/Navbar/Navbar'
@@ -58,8 +58,9 @@ function App() {
       <Route path="checklist" element={<AdminChecklist/>}/>
       </Route>
     
-      
-      
+
+     
+
       </Routes>
 
       </BrowserRouter>
