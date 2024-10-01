@@ -8,11 +8,56 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum userPosition {
+  DEVELOPER
+  POWER_BI
+  SALESFORCE
+  TESTER
+  GRAPHIC_DESIGNER
+}
+
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
   name    String?
   image String?
   created_at DateTime?
+  organisationUsers Organisation_Users[]
+  organisationUsers1 Organisation_User_position[]
 }
+
+model Organisation {
+  id Int @id @default(autoincrement())
+  organisation String @unique
+  created_at DateTime?
+  organisationUsers Organisation_Users[]
+}
+
+
+
+model Organisation_Users{
+  id Int @id @default(autoincrement())
+  organisation_id Int
+  user_id  Int 
+  user_type String? @default("USER ")
+  user_position String?
+  created_at DateTime?
+  user User @relation(fields: [user_id],references: [id])
+  organisation Organisation @relation(fields: [organisation_id], references:[id])
+  organisation2 Organisation_User_position[]
+  @@unique([organisation_id,user_id])
+
+}
+ 
+ model Organisation_User_position {
+  id Int @id @default(autoincrement())
+  organisation_user_id Int
+  user_id Int
+  user_position  userPosition
+  created_at DateTime @default(now())
+  organisationUsers Organisation_Users @relation(fields: [organisation_user_id] , references: [id])
+  user User @relation(fields: [user_id],references: [id])
+  @@unique([organisation_user_id,user_id])
+ }
+
 
