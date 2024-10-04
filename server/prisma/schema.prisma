@@ -16,6 +16,12 @@ enum userPosition {
   GRAPHIC_DESIGNER
 }
 
+enum priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
@@ -45,6 +51,8 @@ model Organisation_Users{
   user User @relation(fields: [user_id],references: [id])
   organisation Organisation @relation(fields: [organisation_id], references:[id])
   organisation2 Organisation_User_position[]
+  organisation3 tags[]
+  organisation4 checklist_template_version[]
   @@unique([organisation_id,user_id])
 
 }
@@ -60,4 +68,54 @@ model Organisation_Users{
   @@unique([organisation_user_id,user_id])
  }
 
+model tags {
+  id Int @id @default(autoincrement())
+  tag_name String
+  organisation_user_id Int 
+  created_at DateTime
+  recurrent  Boolean @default(false)
+  user_positon userPosition
+  type String
+  tags1 Organisation_Users @relation(fields: [organisation_user_id],references: [id])
+}
 
+
+
+model checklist_template{
+  id Int @id @default(autoincrement())
+  template_name String
+  repeating Boolean @default(false)
+  tag_id Int
+  priority priority
+  organisation_user_id Int
+  created_at DateTime
+  organisation_id Int
+  current_version_id Int
+  instructions String
+  template checklist_template_version[]
+  }
+
+  model checklist_template_version {
+  version_id Int @id @default(autoincrement())
+  checklist_template_id Int
+  organisation_user_id Int
+  created_at DateTime
+  template1 checklist_template @relation(fields: [checklist_template_id], references: [id])
+  template2 Organisation_Users @relation(fields: [organisation_user_id],references: [id])
+  template3 checklist_template_linked_items[]
+}
+
+model checklist_template_linked_items {
+  id Int @id @default(autoincrement())
+  template_version_id Int
+  checklist_item_id Int
+  created_at Int
+  linked1 checklist_template_version @relation(fields: [template_version_id], references: [version_id])
+}
+
+model checklist_template_owners {
+ id Int @id @default(autoincrement())
+ checklist_template_id Int
+ organisation_user_id Int
+ created_at DateTime
+}

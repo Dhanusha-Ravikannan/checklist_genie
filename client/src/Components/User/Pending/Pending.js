@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../Navbar/Navbar";
 import "./Pending.css";
 
 function Pending() {
@@ -10,7 +9,7 @@ function Pending() {
 
   return (
     <>
-      <Navbar />
+   
       <div className="pending-container">
         <div className="carddd">
           <div className="headerr">

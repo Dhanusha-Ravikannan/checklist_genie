@@ -1,6 +1,5 @@
 
 import React from "react";
-import Navbar from "../Navbar/Navbar";
 import "./Complete.css";
 
 function Complete() {
@@ -19,7 +18,7 @@ function Complete() {
 
   return (
     <div className="complete-container">
-      <Navbar />
+
       <div className="main-card">
         <h1 className="header-title">Completed Checklists</h1>
 

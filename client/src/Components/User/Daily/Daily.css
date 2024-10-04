@@ -1,5 +1,5 @@
 
-.assigned-containerr {
+.assigned-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,19 +8,19 @@
   box-sizing: border-box;
 }
 
-.assigned-cardd {
-  max-width: 800px;
+.assigned-card {
+  max-width: 850px; 
   width: 100%;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-color: #fff;
+  border-radius: 8px
 }
 
 .card-title {
   margin-bottom: 30px;
   justify-content: center;
 }
-
 
 .task-table-container {
   width: 100%;
@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-.submit-buttonn {
+.submit-button {
   color: #fff;
   text-transform: uppercase;
   border: none;
@@ -61,10 +61,23 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   background-color: #25274D;
-  top:1rem
 }
 
-.checkbox-group {
+.radio-group {
   display: flex;
   justify-content: center;
+  align-items: center; 
+}
+
+.radio-group label {
+  margin-right: 10px; 
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%; 
+}
+
+.comment-input {
+  margin-top: 5px; 
 }

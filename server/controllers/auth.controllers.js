@@ -8,7 +8,7 @@ const googleCallback = (req, res) => {
 
   console.log(token)
   
-  res.redirect(`${process.env.CLIENT_URL}/user/Login1?token=${token}`)
+  res.redirect(`${process.env.CLIENT_URL}/admin/dashboard/?token=${token}`)
 };
 
 

@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import Navbar from "../Navbar/Navbar";
 import "./Settings.css";
+import Sidebar from "../../../Components/User/Sidebar/Sidebar";
 
 const Settings = () => {
   const [lightMode, setLightMode] = useState(false);
@@ -32,7 +32,7 @@ const Settings = () => {
 
   return (
     <>
-      <Navbar />
+  <Sidebar/>
       <div className="settings-container">
         <header className="settings-header">
           <h1>Settings</h1>
