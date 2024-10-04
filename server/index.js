@@ -8,7 +8,7 @@ const generateToken = require('./utils/jwt');
 const cors = require('cors')
 const app = express();
 const port = 5002;
-
+//
 app.use(cors({
   origin : `${process.env.CLIENT_URL}`,
   credentials:true

@@ -10,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 const Home = () => {
   const navigate = useNavigate();
   const handleGoogleSignIn=()=>{
-    window.location.href = `${process.env.REACT_APP_BACKEND_SERVER_URL}/auth/google`;  
-    navigate('/admin/Login1');
+   
+    window.location.href = `${process.env.REACT_APP_BACKEND_SERVER_URL}/auth/google`; 
+    navigate('/user/Login1') 
   }
 
  

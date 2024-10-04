@@ -8,114 +8,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum userPosition {
-  DEVELOPER
-  POWER_BI
-  SALESFORCE
-  TESTER
-  GRAPHIC_DESIGNER
-}
-
-enum priority {
-  HIGH
-  MEDIUM
-  LOW
-}
-
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
   name    String?
   image String?
   created_at DateTime?
-  organisationUsers Organisation_Users[]
-  organisationUsers1 Organisation_User_position[]
 }
 
-model Organisation {
-  id Int @id @default(autoincrement())
-  organisation String @unique
-  created_at DateTime?
-  organisationUsers Organisation_Users[]
-}
-
-
-
-model Organisation_Users{
-  id Int @id @default(autoincrement())
-  organisation_id Int
-  user_id  Int 
-  user_type String? @default("USER ")
-  user_position String?
-  created_at DateTime?
-  user User @relation(fields: [user_id],references: [id])
-  organisation Organisation @relation(fields: [organisation_id], references:[id])
-  organisation2 Organisation_User_position[]
-  organisation3 tags[]
-  organisation4 checklist_template_version[]
-  @@unique([organisation_id,user_id])
-
-}
- 
- model Organisation_User_position {
-  id Int @id @default(autoincrement())
-  organisation_user_id Int
-  user_id Int
-  user_position  userPosition
-  created_at DateTime @default(now())
-  organisationUsers Organisation_Users @relation(fields: [organisation_user_id] , references: [id])
-  user User @relation(fields: [user_id],references: [id])
-  @@unique([organisation_user_id,user_id])
- }
-
-model tags {
-  id Int @id @default(autoincrement())
-  tag_name String
-  organisation_user_id Int 
-  created_at DateTime
-  recurrent  Boolean @default(false)
-  user_positon userPosition
-  type String
-  tags1 Organisation_Users @relation(fields: [organisation_user_id],references: [id])
-}
-
-
-
-model checklist_template{
-  id Int @id @default(autoincrement())
-  template_name String
-  repeating Boolean @default(false)
-  tag_id Int
-  priority priority
-  organisation_user_id Int
-  created_at DateTime
-  organisation_id Int
-  current_version_id Int
-  instructions String
-  template checklist_template_version[]
-  }
-
-  model checklist_template_version {
-  version_id Int @id @default(autoincrement())
-  checklist_template_id Int
-  organisation_user_id Int
-  created_at DateTime
-  template1 checklist_template @relation(fields: [checklist_template_id], references: [id])
-  template2 Organisation_Users @relation(fields: [organisation_user_id],references: [id])
-  template3 checklist_template_linked_items[]
-}
-
-model checklist_template_linked_items {
-  id Int @id @default(autoincrement())
-  template_version_id Int
-  checklist_item_id Int
-  created_at Int
-  linked1 checklist_template_version @relation(fields: [template_version_id], references: [version_id])
-}
-
-model checklist_template_owners {
- id Int @id @default(autoincrement())
- checklist_template_id Int
- organisation_user_id Int
- created_at DateTime
-}

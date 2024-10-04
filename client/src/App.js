@@ -17,6 +17,7 @@ import UserSidebar from "./Components/User/Sidebar/Sidebar";
 import UserNotification from "./Components/User/Notification/Notification";
 import UserComplete from "./Components/User/Complete/Complete";
 import UserBrowse from "./Components/User/Browse/Browse";
+import UserLogin1 from './Components/User/Login1/Login1';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="complete" element={<UserComplete />} />
             <Route path="notification" element={<UserNotification />} />
             <Route path="settings" element={<UserSettings />} />
+            <Route path="login1" element={<UserLogin1/>}/>
           </Route>
         </Routes>
 
