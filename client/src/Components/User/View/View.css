@@ -1,0 +1,52 @@
+
+.view-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  height: 100vh;          
+  padding: 20px;        
+  background-color: #f8f9fa; 
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 80%;              
+  max-width: 800px;       
+  min-height: 300px;      
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.checklist-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.checklist-table th, .checklist-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.checklist-table th {
+  background-color: #f2f2f2;
+}
+
+.back-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #25274D;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #1d1f32; 
+}

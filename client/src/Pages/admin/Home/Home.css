@@ -1,0 +1,87 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.name{
+        background-color: #25274D;
+        height: 4rem;
+        width: 100%;
+        position: fixed;
+}
+
+  
+.img{
+    position: fixed;
+    height:50px;
+    margin-left: 4rem;
+    top: 0.5rem;
+}
+
+
+.hom{
+    margin-top: 20px;
+    text-align: right;
+    padding-right: 4rem;
+    font-weight: bold;
+    color: white;
+}
+
+.sty{
+    background-color: #f9f9f9;          
+    border-radius: 10px;     
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    width: 25rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    padding-bottom: 1rem;
+    margin-top: 5rem;
+    margin-left: 35rem;
+    height: 10rem;
+    padding-top: 2rem;
+    display: grid;
+    text-align: center;
+
+}
+  
+.ggg{
+    
+    height: 100vh;
+    width: 96rem;
+    background-color: #AAABB8;
+}
+
+.signing{
+    background-color: #ffffff;
+    border-radius: 5rem;
+    width: 20rem;
+    height: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    justify-items: center;
+    text-align: center;
+    justify-content: center;
+    padding-top: 1rem;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.1rem;
+    font-weight:bolder;
+    color: #25274D;
+    margin-left: 2.1rem;
+    cursor: pointer;
+}
+
+.signing:hover{
+    
+    background-color: #e6e1e1;
+    
+}
+
+.use{
+    color: rgb(87, 83, 83);
+}
+
+.genie{
+    font-weight: bold;
+    font-size: 1.5rem;
+}

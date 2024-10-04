@@ -5,9 +5,10 @@ const googleCallback = (req, res) => {
   const token = generateToken(user);
  
   console.log(user)
+
   console.log(token)
   
-  res.redirect(`${process.env.CLIENT_URL}/Dashboard?token=${token}`)
+  res.redirect(`${process.env.CLIENT_URL}/user/Login1?token=${token}`)
 };
 
 

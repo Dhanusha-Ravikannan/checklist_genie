@@ -11,7 +11,7 @@ passport.use(new GoogleStrategy({
   },
   async function(request, accessToken, refreshToken, profile, done) {
     try {
-      const email = "aswin@ibtlabs.in";
+      const email = profile.email;
       const userPosition = request.body.userPosition  || "DEVELOPER";
 
       const user = await prisma.user.upsert({

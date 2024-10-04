@@ -1,0 +1,81 @@
+
+.drawer-button {
+  background: transparent; 
+  border: none; 
+  color: #25274D; 
+}
+
+.MuiListItemIcon-root {
+  color: #25274D;
+}
+
+.MuiListItemText-primary {
+  font-weight: bold; 
+  color: black; 
+}
+
+.container {
+  background-color: #25274D;
+}
+
+.pro {
+  color: #fff;
+}
+
+.main-content {
+  margin-top: 45px; 
+  padding: 20px; 
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-cards .welcome-card {
+  width: 96%; 
+  min-height: 100px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+ 
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 5rem;
+}
+
+.card-icon {
+  font-size: 1.5rem; 
+  margin-left: 8px; 
+}
+
+.MuiDrawer-paper {
+  background-color: white;
+} 
+
+.welcome-card {
+  margin-bottom: 20px;
+  padding: 20px; 
+
+}
+
+.card-description {
+  margin-top: 10px;
+  color: #666;
+}
+
+.task-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; 
+}
+
+.task-cards .MuiCard-root {
+  flex: 1; 
+  min-width: 200px; 
+}
