@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -24,6 +24,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom"; 
 import "./Sidebar.css";
+import axios from 'axios'
 
 const drawerWidth = 240;
 
@@ -87,9 +88,11 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [userType, setUserType] = useState("");
   const openMenu = Boolean(anchorEl);
   const navigate = useNavigate(); 
 
+ 
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -105,6 +108,25 @@ export default function MiniDrawer() {
   const handleNavigation = (path) => {
     navigate(path); 
   };
+
+
+  useEffect(() => {
+    const fetchUserType = async () => {
+      try {
+        const token = localStorage.getItem("token"); 
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER_URL}/type/getUserType`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+        const type = response.data.getUserType[0]?.user_type || null;
+        setUserType(type);
+      } catch (error) {
+        console.error("Failed to fetch user type:", error);
+      }
+    };
+    fetchUserType();
+  }, []);
 
   return (
     <>
@@ -175,11 +197,15 @@ export default function MiniDrawer() {
                 icon: <SettingsIcon />,
                 path: "/user/settings",
               },
-              {
-                text: "Admin",
-                icon: <PersonIcon />,
-                path: "/admin/Dashboard",
-              },
+              ...(userType === "ADMIN"
+                ? [
+                    {
+                      text: "Admin",
+                      icon: <PersonIcon />,
+                      path: "/admin/Dashboard",
+                    },
+                  ]
+                : []),
             ].map(({ text, icon, path }) => (
               <ListItem key={text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton

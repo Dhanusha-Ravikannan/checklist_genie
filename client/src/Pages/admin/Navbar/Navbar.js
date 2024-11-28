@@ -243,7 +243,7 @@ export default function MiniDrawer() {
                   ]}
                   onClick={() => {
                     if (text === 'User') {
-                      navigate('/user/login1');
+                      navigate('/user/Browse');
                     } else {
                       navigate(`/admin/${text.toLowerCase().replace(' ', '-')}`);
                     }

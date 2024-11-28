@@ -13,3 +13,4 @@ router.get('/google/callback', passport.authenticate('google'), googleCallback);
 router.get('/failure', failure);
 
 module.exports = router;
+
