@@ -245,7 +245,7 @@ export default function MiniDrawer() {
               icon: <PersonIcon />
             },
             {
-              text: 'Assigned-Task',
+              text: 'Manage Checklist',
             icon: <PersonIcon />
             },
             

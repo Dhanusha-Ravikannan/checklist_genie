@@ -1,3 +1,4 @@
+const { CLIENT_URL } = require('../config/config');
 const { generateToken } = require('../utils/jwt');
 
 const googleCallback = (req, res) => {
@@ -10,7 +11,7 @@ const googleCallback = (req, res) => {
 
   console.log(token)
   
-  res.redirect(`${process.env.CLIENT_URL}/user/Login1/?token=${token}`)
+  res.redirect(`${CLIENT_URL}/user/Login1/?token=${token}`)
 };
 
 

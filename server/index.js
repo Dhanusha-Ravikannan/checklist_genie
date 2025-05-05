@@ -8,7 +8,7 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const tagRoutes = require("./routes/tags.routes");
 const templateRoutes = require("./routes/template.routes");
-const itemRoutes = require("./routes/items.routes"); 
+const itemRoutes = require("./routes/items.routes");
 const responseRoutes = require("./routes/itemResponse.routes");
 const positionRoutes = require("./routes/userPosition.routes");
 const userTypeRoutes = require("./routes/userTypes.routes");
@@ -19,10 +19,10 @@ const cors = require("cors");
 const { authentication } = require("./utils/jwt");
 const app = express();
 var morgan = require("morgan");
-const port = 5002;
+const port = process.env.PORT;
 
 app.use(morgan("dev"));
-
+const path = require("path");
 
 const corsOptions = {
   origin: [
@@ -48,17 +48,26 @@ app.use(passport.session());
 app.use("/", authRoutes);
 app.use("/microsoft", microsoftAuth);
 app.use("/api", userRoutes);
-app.use(authentication);
-app.use("/tags", tagRoutes);
-app.use("/template", templateRoutes);
-app.use("/items", itemRoutes);
-app.use("/checklist", mailRoutes);
-app.use("/response", responseRoutes);
-app.use("/templaterecepients", templateRecepientRoutes);
+// app.use(authentication);
+app.use("/tags", authentication, tagRoutes);
+app.use("/template", authentication, templateRoutes);
+app.use("/items", authentication, itemRoutes);
+app.use("/checklist", authentication, mailRoutes);
+app.use("/response", authentication, responseRoutes);
+app.use("/templaterecepients", authentication, templateRecepientRoutes);
 // app.use('/microsoft',microsoftRoutes)
 
-app.use("/position", positionRoutes);
-app.use("/type", userTypeRoutes);
+app.use("/position", authentication, positionRoutes);
+app.use("/type", authentication, userTypeRoutes);
+
+app.use(express.static(path.join(__dirname, "../client/build/")));
+
+if (process.env.NODE_ENV === "PRODUCTION") {
+  app.get("*", (req, res) => {
+    console.log("Works");
+    return res.sendFile(path.resolve(__dirname, "../client/build/", "index.html"));
+  });
+}
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);

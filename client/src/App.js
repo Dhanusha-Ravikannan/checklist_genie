@@ -60,8 +60,11 @@ function App() {
             <Route path="details" element={<AdminDetails />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="checklist" element={<AdminChecklist />} />
-            <Route path="assigned-task" element = {<AssignedTask />} />
+
+            <Route path="manage-checklist" element = {<AssignedTask />} />
+
             <Route path="templaterecepients/:templateId" element = {<TemplateRecipients />} />
+
           
           </Route>
         </Routes>

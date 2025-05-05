@@ -1,5 +1,5 @@
 const express = require("express");
-const { PrismaClient, userPosition } = require("@prisma/client");
+const { PrismaClient, userPosition, frequency } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllTags = async (req, res) => {
@@ -23,9 +23,11 @@ const getAllTags = async (req, res) => {
   }
 };
 
+
+
 const createTags = async (req, res) => {
   try {
-    const { tag_name, user_position, description } = req.body;
+    const { tag_name, user_position, description,recurrent } = req.body;
     const { organisation_user_id } = req.user;
     const newTag = await prisma.tags.create({
       data: {
@@ -33,6 +35,7 @@ const createTags = async (req, res) => {
         description,
         created_at: new Date(),
         user_position,
+        recurrent ,
         organisation_user_id,
       },
     });
@@ -42,6 +45,8 @@ const createTags = async (req, res) => {
     res.status(500).json({ error: "Failed to create tag" });
   }
 };
+
+
 
 const getAllTagsPosition = async (req, res) => {
   try {

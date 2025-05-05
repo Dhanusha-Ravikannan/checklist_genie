@@ -3,6 +3,7 @@ const passport = require("passport");
 const MicrosoftStrategy = require("passport-microsoft").Strategy;
 const { PrismaClient } = require("@prisma/client");
 const { generateToken } = require("../utils/jwt");
+const { CLIENT_URL } = require("../config/config");
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -114,7 +115,8 @@ router.get( "/callback", passport.authenticate("microsoft", { failureRedirect: "
         try {
            const user = req.user;
            const token = generateToken(user);
-           res.redirect(`${process.env.CLIENT_URL}/user/Login1/?token=${token}`);
+           console.log("🚀 ~ process.env.CLIENT_URL:", process.env.CLIENT_URL)
+           res.redirect(`${CLIENT_URL}/user/Login1/?token=${token}`);
         } catch (error) {
             console.error("Error in callback processing:", error);
             res.status(500).send("Authentication failed. Please try again.");
