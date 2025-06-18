@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 const AssignedTask = () => {
   const navigate = useNavigate();
 
-
   const [data, setData] = useState([]);
   const [selectedTemplateDetails, setSelectedTemplateDetails] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -21,6 +20,11 @@ const AssignedTask = () => {
   const [checklist_name, setChecklist_name] = useState("");
   const [Instructions, setInstructions] = useState("");
   const [dataType, setDataType] = useState("");
+
+  const [editedTemplateName, setEditedTemplateName] = useState("");
+  const [editedItems, setEditedItems] = useState([]);
+  const [availableInputTypes, setAvailableInputTypes] = useState([]);
+  const [isEditingTemplateName, setIsEditingTemplateName] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -72,10 +76,33 @@ const AssignedTask = () => {
     }
   };
 
+  // const editTag = async (tag_id, current_version_id, template_id) => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_BACKEND_SERVER_URL}/items/getItemsByTemplate/${tag_id}/${current_version_id}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     const selectedTemplate = data.find((item) => item.id === template_id);
+
+  //     setSelectedTemplateDetails(selectedTemplate);
+
+  //     setSelectedTemplate(response.data);
+  //     setIsModalOpen(true);
+  //   } catch (error) {
+  //     console.error("Error fetching tag for editing:", error);
+  //   }
+  // };
+
   const editTag = async (tag_id, current_version_id, template_id) => {
     const token = localStorage.getItem("token");
     try {
-      
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_SERVER_URL}/items/getItemsByTemplate/${tag_id}/${current_version_id}`,
         {
@@ -84,18 +111,30 @@ const AssignedTask = () => {
           },
         }
       );
-     
+      console.log("Items :", response.data);
+
       const selectedTemplate = data.find((item) => item.id === template_id);
+      const uniqueInputTypes = [
+        ...new Set(response.data.map((item) => item.input_type)),
+      ];
 
+      setAvailableInputTypes(uniqueInputTypes);
       setSelectedTemplateDetails(selectedTemplate);
-
-
+      setEditedTemplateName(selectedTemplate.template_name);
+      setEditedItems(response.data);
       setSelectedTemplate(response.data);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching tag for editing:", error);
     }
   };
+
+  const handleEditFieldChange = (index, field, value) => {
+    const updatedItems = [...editedItems];
+    updatedItems[index][field] = value;
+    setEditedItems(updatedItems);
+  };
+
   const deleteTag = async (tag_id) => {
     const token = localStorage.getItem("token");
 
@@ -117,7 +156,7 @@ const AssignedTask = () => {
     }
   };
 
-  const addExtraItem = async (tag_id,template_id) => {
+  const addExtraItem = async (tag_id, template_id) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -139,19 +178,16 @@ const AssignedTask = () => {
 
       if (newItem) {
         setSelectedTemplate((prevTag) => [
-          ...prevTag, 
+          ...prevTag,
           {
             id: newItem.id,
             checklist_name: newItem.checklist_name,
             input_type: newItem.input_type,
           },
         ]);
-      
       }
 
       alert("Item successfully added!");
-
-      
 
       setChecklist_name("");
       setInstructions("");
@@ -173,9 +209,37 @@ const AssignedTask = () => {
   };
 
   const handletemplaterecepients = (templateId) => {
-  navigate(`/admin/templaterecepients/${templateId}`);
-};
+    navigate(`/admin/templaterecepients/${templateId}`);
+  };
 
+  const handleSaveChanges = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_BACKEND_SERVER_URL}/template/editTemplateAndItems/${selectedTemplateDetails.Tags.id}/${selectedTemplateDetails.id}`,
+        {
+          template_name: editedTemplateName,
+          items: editedItems.map((item) => ({
+            item_id: item.id,
+            checklist_name: item.checklist_name,
+            Instructions: item.Instructions || "",
+            input_type: item.input_type,
+          })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Template and items updated successfully!");
+      closeModal();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      alert("Failed to save changes.");
+    }
+  };
 
   return (
     <>
@@ -184,23 +248,28 @@ const AssignedTask = () => {
         {data.map((template) => (
           <div key={template.id} className="cardd">
             <div className="card-headerr">
-              <h2>{template.template_name}</h2>
-              <p>
-                <strong>User Positions:</strong> {template.Tags?.user_position}
-              </p>
-              <button
-                onClick={() =>
-                  getTagWithTemplateAndItems(
-                    template.Tags.id,
-                    template.current_version_id,
-                    template.id
-                  )
-                }
-              >
-                VIEW
-              </button>
+              <div className="card-content">
+                <h2 className="template-title">{template.template_name}</h2>
+                <p className="position">
+                  <strong>User Positions:</strong>{" "}
+                  {template.Tags?.user_position}
+                </p>
+                <button
+                  className="view-btn"
+                  onClick={() =>
+                    getTagWithTemplateAndItems(
+                      template.Tags.id,
+                      template.current_version_id,
+                      template.id
+                    )
+                  }
+                >
+                  VIEW
+                </button>
+              </div>
+
               <div className="iconss">
-                <p
+                <span
                   onClick={() =>
                     editTag(
                       template.Tags.id,
@@ -208,23 +277,19 @@ const AssignedTask = () => {
                       template.id
                     )
                   }
-                  style={{ cursor: "pointer" }}
+                  title="Edit"
                 >
                   <EditIcon />
-                </p>
-                <p
-                  onClick={() => deleteTag(template.id)}
-                  style={{ cursor: "pointer" }}
-                >
+                </span>
+                <span onClick={() => deleteTag(template.id)} title="Delete">
                   <DeleteIcon />
-                </p>
-
-                <p
+                </span>
+                <span
                   onClick={() => handletemplaterecepients(template.id)}
-                  style={{ cursor: "pointer" }}
+                  title="Add User"
                 >
                   <PersonAddIcon />
-                </p>
+                </span>
               </div>
             </div>
           </div>
@@ -266,7 +331,7 @@ const AssignedTask = () => {
         )}
 
         {/* Edit Modal */}
-        {isModalOpen && selectedTemplate && (
+        {/* {isModalOpen && selectedTemplate && (
           <div className="modal">
             <div className="modal-content">
               <span className="close-button" onClick={closeModal}>
@@ -275,7 +340,8 @@ const AssignedTask = () => {
               <h2>{selectedTemplateDetails.template_name}</h2>
 
               <div className="modal-body">
-                {/* Left Side: Edit/Add Item */}
+
+                
                 <div className="edit-item-section">
                   <h3>Edit/Add Item</h3>
                   <form
@@ -319,7 +385,6 @@ const AssignedTask = () => {
                   </form>
                 </div>
 
-                {/* Right Side: Existing Items */}
                 <div className="existing-items-section">
                   <h3>Existing Items</h3>
                   <table className="details-table">
@@ -347,6 +412,155 @@ const AssignedTask = () => {
                   </table>
                 </div>
               </div>
+            </div>
+          </div>
+        )} */}
+
+        {isModalOpen && selectedTemplate && (
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close-button" onClick={closeModal}>
+                &times;
+              </span>
+              <h2>Edit Template</h2>
+
+              {/* Template Name Edit */}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                {isEditingTemplateName ? (
+                  <input
+                    type="text"
+                    value={editedTemplateName}
+                    onChange={(e) => setEditedTemplateName(e.target.value)}
+                    placeholder="Template Name"
+                    style={{ padding: "8px", fontSize: "16px", flex: 1 }}
+                  />
+                ) : (
+                  <h3 style={{ margin: 0 }}>{editedTemplateName}</h3>
+                )}
+
+                <button
+                  onClick={() => setIsEditingTemplateName((prev) => !prev)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                  }}
+                  title={
+                    isEditingTemplateName
+                      ? "Stop Editing"
+                      : "Edit Template Name"
+                  }
+                >
+                  ✏️
+                </button>
+              </div>
+
+              <div className="modal-body">
+                {/* Add New Item Section */}
+                <div className="edit-item-section">
+                  <h3>Add New Item</h3>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      addExtraItem(
+                        selectedTemplateDetails.Tags.id,
+                        selectedTemplateDetails.id
+                      );
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Checklist Name"
+                      value={checklist_name}
+                      onChange={(e) => setChecklist_name(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      name="Instructions"
+                      placeholder="Instructions"
+                      value={Instructions}
+                      onChange={(e) => setInstructions(e.target.value)}
+                    />
+                    <select
+                      name="input_type"
+                      value={dataType}
+                      onChange={(e) => setDataType(e.target.value)}
+                    >
+                      <option value="">Select Input Type</option>
+                      {availableInputTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+
+                    <br />
+                    <button type="submit">Add Item</button>
+                  </form>
+                </div>
+
+                {/* Edit Existing Items */}
+                <div className="existing-items-section">
+                  <h3>Edit Existing Items</h3>
+                  <table className="details-table">
+                    <thead>
+                      <tr>
+                        <th>Checklist Name</th>
+                        <th>Input Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {editedItems.length > 0 ? (
+                        editedItems.map((item, index) => (
+                          <tr key={item.id}>
+                            <td>
+                              <input
+                                type="text"
+                                value={item.checklist_name}
+                                onChange={(e) =>
+                                  handleEditFieldChange(
+                                    index,
+                                    "checklist_name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <select
+                                value={item.input_type}
+                                onChange={(e) =>
+                                  handleEditFieldChange(
+                                    index,
+                                    "input_type",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {availableInputTypes.map((type) => (
+                                  <option key={type} value={type}>
+                                    {type}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="3">No items available.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <button onClick={handleSaveChanges}>Save Changes</button>
             </div>
           </div>
         )}

@@ -277,7 +277,6 @@ const getTemplatesForUserPositions = async (req, res) => {
           },
         })
       ).map(async (template) => {
-        // 🔍 Find latest submission for this template
         const latestResponse = await prisma.checklist_item_response.findFirst({
           where: {
             template_version: template.current_version_id,
@@ -305,6 +304,42 @@ const getTemplatesForUserPositions = async (req, res) => {
   }
 };
 
+const editTemplateAndItems = async (req, res) => {
+  try {
+    const { tag_id, template_id } = req.params;
+    const { template_name, items } = req.body;
+
+    const updatedTemplate = await prisma.checklist_template.update({
+      where: { id: parseInt(template_id) },
+      data: { template_name },
+    });
+
+    const updatedItems = [];
+
+    for (const item of items) {
+      const updatedItem = await prisma.checklist_items.update({
+        where: { id: item.item_id },
+        data: {
+          checklist_name: item.checklist_name,
+          Instructions: item.Instructions || null,
+          input_type: item.input_type,
+        },
+      });
+      updatedItems.push(updatedItem);
+    }
+
+    res.status(200).json({
+      message: "Template and checklist items updated successfully",
+      updatedTemplate,
+      updatedItems,
+    });
+  } catch (error) {
+    console.error("Error updating template or items:", error);
+    res.status(500).json({ error: "Failed to update template or items" });
+  }
+};
+
+
 
 
 
@@ -314,4 +349,5 @@ module.exports = {
   getTemplatesByTags,
   getTagsbyTemplates,
   getTemplatesForUserPositions,
+  editTemplateAndItems
 };

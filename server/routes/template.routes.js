@@ -1,6 +1,6 @@
 const express = require('express');
 const { authentication } = require('../utils/jwt');
-const { getAllTemplate, createTemplate,getTemplatesByTags,getTagsbyTemplates, getTemplatesForUserPositions} = require('../controllers/template.controllers');
+const { getAllTemplate, createTemplate,getTemplatesByTags,getTagsbyTemplates, getTemplatesForUserPositions, editTemplateAndItems} = require('../controllers/template.controllers');
 const router = express.Router();
 
 router.use(authentication); 
@@ -12,5 +12,6 @@ router.post('/createTemplate',createTemplate);
 router.get('/getTemplatesByTags',getTemplatesByTags);
 router.get('/getTagsbyTemplate',getTagsbyTemplates);
 router.get('/getTemplates',getTemplatesForUserPositions)
+router.put('/editTemplateAndItems/:tag_id/:template_id',editTemplateAndItems)
 
 module.exports = router;
