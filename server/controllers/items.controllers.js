@@ -11,90 +11,98 @@ const getAllItems = async (req, res) => {
   }
 };
 
+// const createItems = async (req, res) => {
+//   try {
+//     const {
+//       checklist_name,
+//       tag_id,
+//       Instructions,
+//       template_version_id,
+//       input_type,
+//     } = req.body;
+//     const { organisation_user_id, organisation_id } = req.user;
+
+//     const newItem = await prisma.checklist_items.create({
+//       data: {
+//         checklist_name,
+//         tag_id,
+//         organisation_user_id,
+//         organisation_id,
+//         Instructions,
+//         input_type,
+//       },
+//     });
+
+//     const templateVersion = await prisma.checklist_template_version.findFirst({
+//       where: {
+//         version_id: template_version_id,
+//       },
+//       orderBy: { created_at: "desc" },
+//     });
+
+//     const linkedItems = await prisma.checklist_template_linked_items.create({
+//       data: {
+//         template_version_id: templateVersion.version_id,
+//         checklist_item_id: newItem.id,
+//         created_at: new Date(),
+//       },
+//     });
+
+//     res.status(200).json({ newItem, linkedItems });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(400).json({ error: "Error creating checklist item." });
+//   }
+// };
+
+
 const createItems = async (req, res) => {
   try {
-    const {
-      checklist_name,
-      tag_id,
-      Instructions,
-      template_version_id,
-      input_type,
-    } = req.body;
+    const { checklistItems, template_version_id } = req.body;
     const { organisation_user_id, organisation_id } = req.user;
 
-    const newItem = await prisma.checklist_items.create({
-      data: {
-        checklist_name,
-        tag_id,
-        organisation_user_id,
-        organisation_id,
-        Instructions,
-        input_type,
-      },
-    });
+    const createdItems = [];
 
-    const templateVersion = await prisma.checklist_template_version.findFirst({
-      where: {
-        version_id: template_version_id,
-      },
-      orderBy: { created_at: "desc" },
-    });
+    for (const item of checklistItems) {
+      const { checklist_name, tag_id, Instructions, input_type } = item;
 
-    const linkedItems = await prisma.checklist_template_linked_items.create({
-      data: {
-        template_version_id: templateVersion.version_id,
-        checklist_item_id: newItem.id,
-        created_at: new Date(),
-      },
-    });
+      const formattedType = input_type.trim().charAt(0).toUpperCase() + input_type.trim().slice(1).toLowerCase();
+      if (!["Boolean", "Numeric"].includes(formattedType)) {
+        return res.status(400).json({ error: `Invalid input_type: ${input_type}` });
+      }
 
-    res.status(200).json({ newItem, linkedItems });
+      const newItem = await prisma.checklist_items.create({
+        data: {
+          checklist_name,
+          tag_id,
+          organisation_user_id,
+          organisation_id,
+          Instructions,
+          input_type: formattedType,
+        },
+      });
+
+      const linkedItem = await prisma.checklist_template_linked_items.create({
+        data: {
+          template_version_id,
+          checklist_item_id: newItem.id,
+          created_at: new Date(),
+        },
+      });
+
+      createdItems.push({ newItem, linkedItem });
+    }
+
+    res.status(200).json({ message: "Items created", createdItems });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: "Error creating checklist item." });
+    res.status(500).json({ error: "Error creating checklist items." });
   }
 };
 
-// const getItemsByTemplate = async (req, res) => {
-//   try {
-//     const { tag_id, current_version_id } = req.params;
-
-//     const linkedItems = await prisma.checklist_template_linked_items.findMany({
-//       where: {
-//         template_version_id: parseInt(current_version_id),
-//       },
-      
-//     });
-
-//     const checklistItemIds = linkedItems.map((item) => item.checklist_item_id);
-
-//     const items = await prisma.checklist_items.findMany({
-//       where: {
-//         tag_id: parseInt(tag_id),
-//         id: { in: checklistItemIds },
-//       },
-//     });
 
 
-//     const linkedItemsMap = linkedItems.reduce((acc, item) => {
-//       if (!acc[item.checklist_item_id]) {
-//         acc[item.checklist_item_id] = [];
-//       }
-//       acc[item.checklist_item_id].push(item);
-//       return acc;
-//     }, {});
 
-//     const mergedItems = items.map((item) => ({
-//       ...item,
-//       ChecklistTemplateLinkedItems: linkedItemsMap[item.id] || [], 
-//     }));
-
-//     res.status(200).json(mergedItems);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Failed to fetch checklist items." });
-//   }
-// };
 
 const getItemsByTemplate = async (req, res) => {
   try {
