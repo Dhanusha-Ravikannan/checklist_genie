@@ -236,4 +236,40 @@ const addRecipient = async (req, res) => {
   }
 };
 
-module.exports = { submitChecklist, addRecipient };
+const sendOtpEmail = async (recipientEmail, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.OUTLOOK_EMAIL,
+        pass: process.env.OUTLOOK_PASSWORD,
+      },
+    });
+
+    const emailContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #00466a;">Your One-Time Password (OTP)</h2>
+        <p>Thank you for registering. Please use the following OTP to complete your registration process. This OTP is valid for 10 minutes.</p>
+        <h3 style="background: #00466a; margin: 0 auto; width: max-content; padding: 10px 20px; color: #fff; border-radius: 4px;">${otp}</h3>
+        <p>If you did not request this, please ignore this email.</p>
+        <hr/>
+        <p>Thanks,<br/>The Team</p>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: recipientEmail,
+      subject: "Your OTP for Registration",
+      html: emailContent,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`OTP email sent successfully to ${recipientEmail}.`);
+  } catch (error) {
+    console.error("Error sending OTP email:", error);
+    throw new Error("Failed to send OTP email.");
+  }
+};
+
+module.exports = { submitChecklist, addRecipient, sendOtpEmail };

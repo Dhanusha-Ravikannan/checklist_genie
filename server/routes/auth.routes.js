@@ -1,6 +1,6 @@
 const express = require('express');
 const passport = require('passport');
-const { googleCallback, failure } = require('../controllers/auth.controllers');
+const { googleCallback, failure, requestRegistrationOtp, loginUser, verifyOtpAndRegister } = require('../controllers/auth.controllers');
 const router = express.Router();
 
 
@@ -12,6 +12,8 @@ router.get('/google/callback', passport.authenticate('google'), googleCallback);
 
 router.get('/failure', failure);
 
-module.exports = router;
+router.post('/register', requestRegistrationOtp);
+router.post('/verify', verifyOtpAndRegister);
+router.post('/login', loginUser);
 
- 
+module.exports = router;
