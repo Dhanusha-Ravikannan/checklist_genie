@@ -272,4 +272,40 @@ const sendOtpEmail = async (recipientEmail, otp) => {
   }
 };
 
-module.exports = { submitChecklist, addRecipient, sendOtpEmail };
+const sendForgetPasswordOTP = async (email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.OUTLOOK_EMAIL,
+        pass: process.env.OUTLOOK_PASSWORD,
+      },
+    });
+
+    const emailContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #00466a;">Your Password Reset OTP</h2>
+        <p>We received a request to reset your password. Please use the following OTP to proceed with resetting your password. This OTP is valid for 10 minutes.</p>
+        <h3 style="background: #00466a; margin: 0 auto; width: max-content; padding: 10px 20px; color: #fff; border-radius: 4px;">${otp}</h3>
+        <p>If you did not request this, please ignore this email.</p>
+        <hr/>
+        <p>Thanks,<br/>The Team</p>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: email,
+      subject: "Your Password Reset OTP",
+      html: emailContent,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Password reset OTP email sent successfully to ${email}.`);
+  } catch (error) {
+    console.error("Error sending password reset OTP email:", error);
+    throw new Error("Failed to send password reset OTP email.");
+  }
+}
+
+module.exports = { submitChecklist, addRecipient, sendOtpEmail, sendForgetPasswordOTP };
