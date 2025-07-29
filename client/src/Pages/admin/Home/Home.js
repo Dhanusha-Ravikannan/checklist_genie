@@ -58,13 +58,14 @@ const Home = () => {
     const location = useLocation();
 
     // --- State Management ---
-    const [view, setView] = useState("social"); // 'social', 'login', 'register', 'otp'
+    const [view, setView] = useState("social"); // 'social', 'login', 'register', 'otp', 'forgotPassword', 'resetPassword'
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         organisationName: "",
         otp: "",
+        confirmPassword: "", // Added for password reset
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -74,27 +75,25 @@ const Home = () => {
     const handleSuccessfulLogin = (token) => {
         localStorage.setItem("token", token);
         console.log("Login successful. Navigating...");
-        navigate("/User/Browse"); // Navigate to the correct page
+        navigate("/User/Browse");
     };
-    
+
     // --- Effect to Handle Social Login Redirect ---
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
         if (token) {
             console.log("Token found in URL, processing social login...");
-            // Clear the token from the URL
             window.history.replaceState(null, null, window.location.pathname);
             handleSuccessfulLogin(token);
         }
-    }, [location, navigate]); // Added navigate to dependency array
-
+    }, [location, navigate]);
 
     // --- Handlers ---
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    
+
     const handleGoogleSignIn = () => {
         window.location.href = `${process.env.REACT_APP_BACKEND_SERVER_URL}/auth/google`;
     };
@@ -159,6 +158,52 @@ const Home = () => {
         }
     };
 
+    // --- NEW: Forgot Password Handler ---
+    const handleRequestPasswordReset = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+        setMessage("");
+        try {
+            await axios.post(
+                `${process.env.REACT_APP_BACKEND_SERVER_URL}/request-password-reset`,
+                { email: formData.email }
+            );
+            setMessage("A password reset OTP has been sent to your email.");
+            setView("resetPassword");
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to send reset OTP.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // --- NEW: Reset Password with OTP Handler ---
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        if (formData.password !== formData.confirmPassword) {
+            setError("New passwords do not match.");
+            return;
+        }
+        setLoading(true);
+        setError("");
+        setMessage("");
+        try {
+            await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_URL}/reset-password`, {
+                email: formData.email,
+                otp: formData.otp,
+                newPassword: formData.password,
+            });
+            setMessage("Password has been reset successfully. Please log in.");
+            setView("login");
+            setFormData(prev => ({ ...prev, password: "", confirmPassword: "", otp: "" }));
+        } catch (err) {
+            setError(err.response?.data?.message || "Password reset failed.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const resetFormState = () => {
         setError("");
         setMessage("");
@@ -170,15 +215,17 @@ const Home = () => {
             <Link
                 component="button"
                 onClick={() => { setView("social"); resetFormState(); }}
-                sx={{ position: "absolute", top: "20px", left: "20px", textDecoration: "none", fontWeight: "bold" }}
+                sx={{ position: "absolute", top: "20px", left: "20px", textDecoration: "none", fontWeight: "bold", ":hover": { background: "white" } }}
             >
                 &larr; Back
             </Link>
             <Typography variant="h5" fontWeight="600" color="#25274D" gutterBottom sx={{ mt: 3 }}>
                 {title}
             </Typography>
-            {title === "Verify OTP" && (
-                <Typography variant="body2" color="textSecondary">An OTP was sent to {formData.email}</Typography>
+            {(title === "Verify OTP" || title === "Reset Your Password") && (
+                <Typography variant="body2" color="textSecondary">
+                    An OTP was sent to {formData.email}
+                </Typography>
             )}
             <Box component="form" onSubmit={onSubmit} sx={{ mt: 2 }}>
                 {fields.map((field) => (
@@ -208,7 +255,7 @@ const Home = () => {
                 </ActionButton>
                 <Typography variant="body2">
                     {switchViewText}{" "}
-                    <Link component="button" variant="body2" onClick={() => { setView(newView); resetFormState(); }}>
+                    <Link component="button" variant="body2" onClick={() => { setView(newView); resetFormState(); }} sx={{ textDecoration: "none", "&:hover": { textDecoration: "underline", background: "white" } }}>
                         Click here
                     </Link>
                 </Typography>
@@ -263,9 +310,52 @@ const Home = () => {
                     </>
                 )}
 
-                {view === "login" && renderForm( "Login", [ { name: "email", label: "Email Address", type: "email", autoFocus: true }, { name: "password", label: "Password", type: "password" }, ], handleLogin, "Login", "Don't have an account?", "register" )}
-                {view === "register" && renderForm( "Create Account", [ { name: "name", label: "Full Name", type: "text", autoFocus: true }, { name: "email", label: "Email Address", type: "email" }, { name: "password", label: "Password", type: "password" }, { name: "organisationName", label: "Organisation Name", type: "text" }, ], handleRegister, "Register & Get OTP", "Already have an account?", "login" )}
-                {view === "otp" && renderForm( "Verify OTP", [ { name: "otp", label: "6-Digit OTP", type: "text", autoFocus: true }, ], handleVerifyOtp, "Verify & Complete", "Didn't get an OTP?", "register" )}
+                {view === "login" && (
+                    <>
+                        {renderForm(
+                            "Login",
+                            [
+                                { name: "email", label: "Email Address", type: "email", autoFocus: true },
+                                { name: "password", label: "Password", type: "password" },
+                            ],
+                            handleLogin,
+                            "Login",
+                            "Don't have an account?",
+                            "register"
+                        )}
+                        <Box textAlign="right" sx={{ mt: 2 }}>
+                             <Link component="button" variant="body2" onClick={() => { setView('forgotPassword'); resetFormState(); }} sx={{ textDecoration: "none", "&:hover": { textDecoration: "underline", background: "white" } }}>
+                                Forgot Password?
+                            </Link>
+                        </Box>
+                    </>
+                )}
+                
+                {view === "register" && renderForm("Create Account", [{ name: "name", label: "Full Name", type: "text", autoFocus: true }, { name: "email", label: "Email Address", type: "email" }, { name: "password", label: "Password", type: "password" }, { name: "organisationName", label: "Organisation Name", type: "text" },], handleRegister, "Register & Get OTP", "Already have an account?", "login")}
+                
+                {view === "otp" && renderForm("Verify OTP", [{ name: "otp", label: "6-Digit OTP", type: "text", autoFocus: true },], handleVerifyOtp, "Verify & Complete", "Didn't get an OTP?", "register")}
+
+                {view === "forgotPassword" && renderForm(
+                    "Forgot Password",
+                    [{ name: "email", label: "Enter your registered email", type: "email", autoFocus: true }],
+                    handleRequestPasswordReset,
+                    "Send Reset OTP",
+                    "Remember your password?",
+                    "login"
+                )}
+
+                {view === "resetPassword" && renderForm(
+                    "Reset Your Password",
+                    [
+                        { name: "otp", label: "6-Digit OTP", type: "text", autoFocus: true },
+                        { name: "password", label: "New Password", type: "password" },
+                        { name: "confirmPassword", label: "Confirm New Password", type: "password" },
+                    ],
+                    handleResetPassword,
+                    "Reset Password",
+                    "Decided not to reset?",
+                    "login"
+                )}
             </SignInCard>
         </BackgroundContainer>
     );

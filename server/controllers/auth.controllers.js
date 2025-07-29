@@ -1,6 +1,6 @@
 const { CLIENT_URL } = require('../config/config');
 const { generateToken } = require('../utils/jwt');
-const { sendOtpEmail } = require('./mail.controllers');
+const { sendOtpEmail, sendForgetPasswordOTP } = require('./mail.controllers');
 
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -141,7 +141,76 @@ const failure = (req, res) => {
   res.send('Failed...!');
 };
 
+//forget password otp
+const requestPasswordResetOtp = async (req, res) => {
+  const { email } = req.body;
 
-module.exports = { googleCallback, failure, requestRegistrationOtp, verifyOtpAndRegister, loginUser };
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required.' });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Generate a 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    await prisma.otp.upsert({
+      where: { email },
+      update: { otp },
+      create: { email, otp },
+    });
+
+    // Send the OTP via email
+    await sendForgetPasswordOTP(email, otp);
+
+    res.status(200).json({ message: 'OTP has been sent to your email. Please verify to reset your password.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Server error while sending OTP.' });
+  }
+};
+
+const verifyOtpAndResetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  try {
+    const otpRecord = await prisma.otp.findUnique({ where: { email } });
+
+    if (!otpRecord || otpRecord.otp !== otp) {
+      return res.status(400).json({ error: 'Invalid or incorrect OTP.' });
+    }
+
+    const otpAgeInMinutes = (new Date() - otpRecord.createdAt) / (1000 * 60);
+    if (otpAgeInMinutes > 10) {
+      return res.status(400).json({ error: 'OTP has expired. Please request a new one.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    await prisma.otp.delete({ where: { email } });
+
+    res.status(200).json({ message: 'Password has been reset successfully.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Server error during password reset.' });
+  }
+};
+
+module.exports = { googleCallback, failure, requestRegistrationOtp, verifyOtpAndRegister, loginUser, requestPasswordResetOtp, verifyOtpAndResetPassword };
 
 
