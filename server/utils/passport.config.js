@@ -1,5 +1,9 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
+
 const { PrismaClient, userPosition } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -105,6 +109,53 @@ passport.use(
         });
       } catch (error) {
         return done(error, null);
+      }
+    }
+  )
+);
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+    },
+    async (email, password, done) => {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { email: email },
+        });
+
+        if (!user || !user.password) {
+          return done(null, false, { message: 'Incorrect email or password.' });
+        }
+        
+        if (!user.isVerified) {
+          return done(null, false, { message: 'Please verify your email before logging in.' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return done(null, false, { message: 'Incorrect email or password.' });
+        }
+
+        const org_user = await prisma.organisation_Users.findFirst({
+            where: { user_id: user.id },
+        });
+
+        if (!org_user) {
+            return done(null, false, { message: "User is not part of any organization."})
+        }
+
+        return done(null, {
+          organisation: org_user.organisation_id,
+          organisation_user_id: org_user.id,
+          user_id: user.id,
+          name: user.name,
+          email: user.email,
+        });
+
+      } catch (error) {
+        return done(error);
       }
     }
   )
