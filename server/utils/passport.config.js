@@ -19,10 +19,7 @@ passport.use(
       try {
         const email = profile.email;
 
-        const organisationDomain = email.substring(
-          email.lastIndexOf("@") + 1,
-          email.lastIndexOf(".")
-        );
+        const organisationDomain = email.substring(email.lastIndexOf("@") + 1);
 
         const user = await prisma.user.upsert({
           where: { email: email },
@@ -45,7 +42,7 @@ passport.use(
           },
         });
 
-        console.log("exist", existingOrg)
+        console.log("exist", existingOrg);
 
         const organisation = await prisma.organisation.upsert({
           where: {
@@ -60,12 +57,9 @@ passport.use(
           },
         });
 
-        
         const isNewOrganization = !existingOrg;
 
-
-        console.log("new", isNewOrganization)
-
+        console.log("new", isNewOrganization);
 
         let org_user = await prisma.organisation_Users.findFirst({
           where: {
@@ -77,7 +71,7 @@ passport.use(
         if (org_user) {
           org_user = await prisma.organisation_Users.update({
             where: {
-              id: org_user.id, 
+              id: org_user.id,
             },
             data: {
               created_at: new Date(),
@@ -86,15 +80,14 @@ passport.use(
         } else {
           const userType = isNewOrganization ? "ADMIN" : "USER";
 
-          console.log("usertype", userPosition)
+          console.log("usertype", userPosition);
 
-          
           org_user = await prisma.organisation_Users.create({
             data: {
               organisation_id: organisation.id,
               user_id: user.id,
               created_at: new Date(),
-              user_type: userType, 
+              user_type: userType,
             },
           });
         }
@@ -117,7 +110,7 @@ passport.use(
 passport.use(
   new LocalStrategy(
     {
-      usernameField: 'email',
+      usernameField: "email",
     },
     async (email, password, done) => {
       try {
@@ -126,24 +119,28 @@ passport.use(
         });
 
         if (!user || !user.password) {
-          return done(null, false, { message: 'Incorrect email or password.' });
+          return done(null, false, { message: "Incorrect email or password." });
         }
-        
+
         if (!user.isVerified) {
-          return done(null, false, { message: 'Please verify your email before logging in.' });
+          return done(null, false, {
+            message: "Please verify your email before logging in.",
+          });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-          return done(null, false, { message: 'Incorrect email or password.' });
+          return done(null, false, { message: "Incorrect email or password." });
         }
 
         const org_user = await prisma.organisation_Users.findFirst({
-            where: { user_id: user.id },
+          where: { user_id: user.id },
         });
 
         if (!org_user) {
-            return done(null, false, { message: "User is not part of any organization."})
+          return done(null, false, {
+            message: "User is not part of any organization.",
+          });
         }
 
         return done(null, {
@@ -153,7 +150,6 @@ passport.use(
           name: user.name,
           email: user.email,
         });
-
       } catch (error) {
         return done(error);
       }
