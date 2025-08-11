@@ -112,7 +112,7 @@ const createTemplate = async (req, res) => {
           checklist_template_id: newTemplate.id,
           recipient_email: owner.user.email,
           cc_bcc_emails: "to",
-          assigned_by_user_id: organisation_user_id,
+          assigned_by_user_id: owner.user.id,
           created_at: new Date(),
           updated_at: new Date(),
         },
