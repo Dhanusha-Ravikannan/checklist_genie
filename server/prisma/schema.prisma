@@ -56,7 +56,7 @@ model User {
   created_at                DateTime?
   OrganisationUsers         Organisation_Users[]
   OrganisationUsersPosition Organisation_User_position[]
-  templateRecipients        TemplateRecipients[]
+ 
 }
 
 model Organisation {
@@ -82,6 +82,7 @@ model Organisation_Users {
   OrganisationTemplateVersion           checklist_template_version[]
   OrganisationTemplateOwners            checklist_template_owners[]
   OrganisationUserChecklistItemResponse checklist_item_response[]
+  OrganizationTemplate                   TemplateRecipients[]
 }
 
 model Organisation_User_position {
@@ -199,5 +200,5 @@ model TemplateRecipients {
   updated_at            DateTime @updatedAt
 
   checklistTemplate checklist_template @relation(fields: [checklist_template_id], references: [id], onDelete: Cascade)
-  assignedByUser    User               @relation(fields: [assigned_by_user_id], references: [id])
+  assignedByUser    Organisation_Users               @relation(fields: [assigned_by_user_id], references: [id])
 }
