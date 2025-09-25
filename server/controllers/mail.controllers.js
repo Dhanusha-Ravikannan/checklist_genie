@@ -124,14 +124,8 @@ const submitChecklist = async (req, res) => {
 
     const templateName = checklistTemplate.template_name;
 
-    const dbResponse = await prisma.checklist_item_response.findFirst({
-      where: { id: checklistTemplateId },
-      select: { selected_date: true },
-    });
-
-    const rawDate = selectedDateFromUI || dbResponse?.selected_date;
+    const rawDate = selectedDateFromUI;
     if (!rawDate) {
-      console.error("No selected date available");
       return res.status(400).json({ error: "Selected date is required." });
     }
 
