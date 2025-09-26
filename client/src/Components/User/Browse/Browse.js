@@ -9,6 +9,13 @@ import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { Tooltip, IconButton } from "@mui/material";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
+const loader = (
+  <div className="loader-container">
+    <div className="spinner"></div>
+    <span>Submitting...</span>
+  </div>
+);
+
 function Browse() {
   const [sortBy, setSortBy] = useState("Assigned");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +27,7 @@ function Browse() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(null);
   const [openDescriptionId, setOpenDescriptionId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -236,6 +244,7 @@ function Browse() {
           }
         )
       );
+      setIsLoading(true);
 
       await Promise.all(submissionPromises);
       localStorage.setItem(
@@ -260,6 +269,11 @@ function Browse() {
 
       if (emailResponse.status === 200) {
         alert("Checklist submitted and email sent successfully!");
+        setIsLoading(false);
+        setIsModalOpen(false);
+        setModalContent(null);
+        setItems([]);
+        setSelectedDate("");
       } else {
         alert("Checklist submitted, but failed to send email.");
       }
@@ -593,7 +607,8 @@ function Browse() {
                         onClick={handleBulkSubmit}
                         disabled={isSubmitting}
                       >
-                        Submit
+                        <div className="submit-text">{isLoading ? loader : "Submit"}</div>
+                        
                       </button>
                     </div>
                   </div>
