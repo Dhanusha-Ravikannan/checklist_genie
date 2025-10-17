@@ -103,12 +103,59 @@ const createItems = async (req, res) => {
 
 
 
+// const getItemsByTemplate = async (req, res) => {
+//   try {
+//     const { tag_id, current_version_id } = req.params;
+
+    
+
+//     const parsedVersionId = Number(current_version_id);
+//     const parsedTagId = Number(tag_id);
+
+//     const linkedItems = await prisma.checklist_template_linked_items.findMany({
+//       where: {
+//         template_version_id: parsedVersionId,
+//       },
+//     });
+
+//     if (!linkedItems.length) {
+//       return res.status(404).json({ message: "No linked items found." });
+//     }
+
+//     const checklistItemIds = linkedItems.map((item) => item.checklist_item_id);
+
+//     const items = await prisma.checklist_items.findMany({
+//       where: {
+//         tag_id: parsedTagId,
+//         id: { in: checklistItemIds },
+//       },
+//     });
+
+//     const linkedItemsMap = linkedItems.reduce((acc, item) => {
+//       if (!acc[item.checklist_item_id]) {
+//         acc[item.checklist_item_id] = [];
+//       }
+//       acc[item.checklist_item_id].push(item);
+//       return acc;
+//     }, {});
+
+//     const mergedItems = items.map((item) => ({
+//       ...item,
+//       ChecklistTemplateLinkedItems: linkedItemsMap[item.id] || [],
+//     }));
+//     console.log("Template version :",mergedItems)
+
+//     res.status(200).json(mergedItems);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Failed to fetch checklist items." });
+//   }
+// };
+
 
 const getItemsByTemplate = async (req, res) => {
   try {
     const { tag_id, current_version_id } = req.params;
-
-    
 
     const parsedVersionId = Number(current_version_id);
     const parsedTagId = Number(tag_id);
@@ -119,8 +166,9 @@ const getItemsByTemplate = async (req, res) => {
       },
     });
 
+    // If no linked items found, return empty array to allow editing
     if (!linkedItems.length) {
-      return res.status(404).json({ message: "No linked items found." });
+      return res.status(200).json([]);  
     }
 
     const checklistItemIds = linkedItems.map((item) => item.checklist_item_id);
@@ -144,7 +192,6 @@ const getItemsByTemplate = async (req, res) => {
       ...item,
       ChecklistTemplateLinkedItems: linkedItemsMap[item.id] || [],
     }));
-    console.log("Template version :",mergedItems)
 
     res.status(200).json(mergedItems);
   } catch (error) {
