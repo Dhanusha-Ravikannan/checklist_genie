@@ -212,39 +212,50 @@ const getTagsByUserPosition = async (req, res) => {
 const deleteTag = async (req, res) => {
   try {
     const { tag_id } = req.params;
-
     const tagId = parseInt(tag_id);
 
-    await prisma.checklist_template_linked_items.deleteMany({
-      where: {
-        ChecklistItems: { tag_id: tagId },
-      },
-    });
-
-    await prisma.checklist_template_owners.deleteMany({
-      where: {
-        ChecklistTemplate: {
-          tag_id: tagId,
-        },
-      },
-    });
-    await prisma.checklist_template_version.deleteMany({
-      where: {
-        ChecklistTemplate: {
-          tag_id: tagId,
-        },
-      },
-    });
-
-    await prisma.checklist_items.deleteMany({
+    // Delete linked checklist items if any
+    const items = await prisma.checklist_items.findMany({
       where: { tag_id: tagId },
+      select: { id: true },
     });
 
-    await prisma.checklist_template.deleteMany({
+    const itemIds = items.map(item => item.id);
+
+    if (itemIds.length > 0) {
+      await prisma.checklist_template_linked_items.deleteMany({
+        where: { checklist_item_id: { in: itemIds } },
+      });
+
+      await prisma.checklist_items.deleteMany({
+        where: { id: { in: itemIds } },
+      });
+    }
+
+    // Delete versions and owner if templates exist
+    const templates = await prisma.checklist_template.findMany({
       where: { tag_id: tagId },
+      select: { id: true },
     });
 
-    const delTags = await prisma.tags.delete({
+    const templateIds = templates.map(t => t.id);
+
+    if (templateIds.length > 0) {
+      await prisma.checklist_template_owners.deleteMany({
+        where: { checklist_template_id: { in: templateIds } },
+      });
+
+      await prisma.checklist_template_version.deleteMany({
+        where: { checklist_template_id: { in: templateIds } },
+      });
+
+      await prisma.checklist_template.deleteMany({
+        where: { id: { in: templateIds } },
+      });
+    }
+
+    // Finally, delete the tag
+    await prisma.tags.delete({
       where: { id: tagId },
     });
 
