@@ -119,7 +119,7 @@ const AssignedTask = () => {
       setAvailableInputTypes(allInputTypes);
       setSelectedTemplateDetails(selectedTemplate);
       setEditedTemplateName(selectedTemplate.template_name);
-      setEditedItems(response.data);
+      setEditedItems(response.data || []);
       setSelectedTemplate(response.data);
       setIsModalOpen(true);
     } catch (error) {
@@ -154,32 +154,34 @@ const AssignedTask = () => {
   //   }
   // };
 
-  const deleteTag = async (tag_id) => {
-    const token = localStorage.getItem("token");
+ const deleteTag = async (tag_id, setData) => {
+  const token = localStorage.getItem("token");
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this tag and all its linked checklist data?"
+  );
 
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this tag and all its linked checklist data?"
+  if (!confirmDelete) return;
+
+  try {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_BACKEND_SERVER_URL}/tags/deleteTag/${tag_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    if (!confirmDelete) return;
+    // Remove deleted tag from state
+    setData((prevData) => prevData.filter((tag) => tag.id !== tag_id));
 
-    try {
-      await axios.delete(
-        `${process.env.REACT_APP_BACKEND_SERVER_URL}/tags/deleteTag/${tag_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setData((prevData) => prevData.filter((tag) => tag.id !== tag_id));
-      alert("✅ Tag successfully deleted!");
-    } catch (error) {
-      console.error("Error deleting tag:", error);
-      alert("❌ Failed to delete the tag.");
-    }
-  };
+    alert("✅ Tag successfully deleted!");
+  } catch (error) {
+    console.error("Delete Tag Error:", error.response || error);
+    const errorMsg = error.response?.data?.error || "Unknown error occurred";
+    alert(`❌ Failed to delete tag: ${errorMsg}`);
+  }
+};
 
   const addExtraItem = async (tag_id, template_id) => {
     const token = localStorage.getItem("token");
@@ -304,6 +306,7 @@ const AssignedTask = () => {
                     )
                   }
                   title="Edit"
+                  style={{ cursor: 'pointer' }}
                 >
                   <EditIcon />
                 </span>
@@ -311,20 +314,18 @@ const AssignedTask = () => {
                   <DeleteIcon />
                 </span> */}
                 <span
-                  onClick={() => deleteTag(template.id)}
-                  title="Delete Tag"
-                  style={{
-                    cursor: "pointer",
-                    color: "#d32f2f",
-                    marginLeft: "10px",
-                  }}
-                >
-                  <DeleteIcon />
-                </span>
+  onClick={() => deleteTag(template.Tags.id, setData)}
+  title="Delete"
+  style={{ cursor: "pointer", color: "#d32f2f",
+                    marginLeft: "10px", }}
+>
+  <DeleteIcon />
+</span>
 
                 <span
                   onClick={() => handletemplaterecepients(template.id)}
                   title="Add User"
+                  style={{ cursor: 'pointer' }}
                 >
                   <PersonAddIcon />
                 </span>

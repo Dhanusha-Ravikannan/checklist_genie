@@ -38,7 +38,7 @@ export default function Dashboard() {
                 View More
               </h3>
             </div>
-            <div className="cardd">
+            <div className="cardd"> 
               <img src={swetha} alt="swethapic" className="pic" />
               <h2 className="vin">
                 Swetha <input className="input-position" placeholder="88%" />{" "}

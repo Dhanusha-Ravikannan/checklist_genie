@@ -103,6 +103,7 @@ const createItems = async (req, res) => {
 
 
 
+
 // const getItemsByTemplate = async (req, res) => {
 //   try {
 //     const { tag_id, current_version_id } = req.params;
@@ -152,7 +153,6 @@ const createItems = async (req, res) => {
 //   }
 // };
 
-
 const getItemsByTemplate = async (req, res) => {
   try {
     const { tag_id, current_version_id } = req.params;
@@ -199,7 +199,6 @@ const getItemsByTemplate = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch checklist items." });
   }
 };
-
 
 
 const addExtraItems = async (req, res) => {

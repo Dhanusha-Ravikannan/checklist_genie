@@ -211,15 +211,16 @@ const getTagsByUserPosition = async (req, res) => {
 
 const deleteTag = async (req, res) => {
   try {
-    const { tag_id } = req.params;
-    const tagId = parseInt(tag_id);
+    const tagId = parseInt(req.params.tag_id);
+    if (isNaN(tagId)) {
+      return res.status(400).json({ error: "Invalid tag ID" });
+    }
 
-    // Delete linked checklist items if any
+    // 1. Delete linked checklist items
     const items = await prisma.checklist_items.findMany({
       where: { tag_id: tagId },
       select: { id: true },
     });
-
     const itemIds = items.map(item => item.id);
 
     if (itemIds.length > 0) {
@@ -232,12 +233,11 @@ const deleteTag = async (req, res) => {
       });
     }
 
-    // Delete versions and owner if templates exist
+    // 2. Delete templates, versions, and owners
     const templates = await prisma.checklist_template.findMany({
       where: { tag_id: tagId },
       select: { id: true },
     });
-
     const templateIds = templates.map(t => t.id);
 
     if (templateIds.length > 0) {
@@ -254,21 +254,22 @@ const deleteTag = async (req, res) => {
       });
     }
 
-    // Finally, delete the tag
+    // 3. Delete the tag itself
     await prisma.tags.delete({
       where: { id: tagId },
     });
 
-    res.status(200).json({ message: "Successfully deleted" });
+    return res.status(200).json({ message: "Tag successfully deleted" });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: "Error deleting tag and related data" });
+    console.error("Delete Tag Error:", error);
+    return res.status(500).json({ error: "Failed to delete tag and related data" });
   }
 };
+ 
 
 module.exports = {
   getAllTags,
-  createTags,
+  createTags, 
   getAllTagsPosition,
   getTagsForPosition,
   getTagsByUserPosition,

@@ -1,7 +1,7 @@
 const { CLIENT_URL } = require('../config/config');
 const { generateToken } = require('../utils/jwt');
 const { sendOtpEmail, sendForgetPasswordOTP } = require('./mail.controllers');
-
+ 
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
